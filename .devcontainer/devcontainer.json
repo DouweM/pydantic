@@ -1,0 +1,66 @@
+{
+  "name": "Pydantic Dev",
+  "image": "ghcr.io/astral-sh/uv:debian",
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.debugpy",
+        "charliermarsh.ruff",
+        "github.vscode-github-actions",
+        "tamasfe.even-better-toml",
+        "redhat.vscode-yaml"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": ".venv/bin/python",
+        "python.testing.pytestArgs": [
+          "--durations=10",
+          "tests"
+        ],
+        "python.testing.unittestEnabled": false,
+        "python.testing.pytestEnabled": true,
+        "[python]": {
+          "editor.formatOnSave": true,
+          "editor.codeActionsOnSave": {
+            "source.fixAll": "explicit",
+            "source.organizeImports": "explicit"
+          },
+          "editor.defaultFormatter": "charliermarsh.ruff"
+        }
+      },
+      "launch": {
+        "configurations": [
+          {
+            "name": "Python: Debug Current File",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": false
+          },
+          {
+            "name": "Python: Debug Test",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "purpose": [
+              "debug-test"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": false
+          }
+        ]
+      }
+    },
+    "codespaces": {
+      "openFiles": [
+        "docs/contributing.md"
+      ]
+    }
+  },
+  "postCreateCommand": "make install"
+}

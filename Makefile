@@ -1,4 +1,4 @@
-# .DEFAULT_GOAL := all
+.DEFAULT_GOAL := all
 sources = pydantic tests docs/plugins
 NUM_THREADS?=1
 
@@ -6,14 +6,9 @@ NUM_THREADS?=1
 .uv:
 	@uv -V || echo 'Please install uv: https://docs.astral.sh/uv/getting-started/installation/'
 
-.PHONY: .pre-commit  ## Check that pre-commit is installed
-.pre-commit: .uv
-	@uv run pre-commit -V || uv pip install pre-commit
-
 .PHONY: install  ## Install the package, dependencies, and pre-commit for local development
 install: .uv
 	uv sync --frozen --group all --all-extras
-	uv pip install pre-commit
 	uv run pre-commit install --install-hooks
 
 .PHONY: rebuild-lockfiles  ## Rebuild lockfiles from scratch, updating all dependencies
@@ -30,13 +25,17 @@ lint: .uv
 	uv run ruff check $(sources)
 	uv run ruff format --check $(sources)
 
-.PHONY: codespell  ## Use Codespell to do spellchecking
-codespell: .pre-commit
-	uv run pre-commit run codespell --all-files
+.PHONY: spellcheck  ## Use codespell to do spellchecking
+spellcheck: .uv
+	uv run codespell
 
 .PHONY: typecheck  ## Perform type-checking
-typecheck: .pre-commit
-	uv run pre-commit run typecheck --all-files
+typecheck: .uv
+	uv run pyright pydantic
+
+.PHONY: pre-commit-misc  ## Run the miscellaneous pre-commit checks
+pre-commit-misc: .uv
+	uv run pre-commit run check-yaml check-toml end-of-file-fixer trailing-whitespace --all-files
 
 .PHONY: test-mypy  ## Run the mypy integration tests
 test-mypy: .uv
@@ -96,7 +95,7 @@ test-no-docs: .uv
 	uv run pytest tests --ignore=tests/test_docs.py
 
 .PHONY: all  ## Run the standard set of checks performed in CI
-all: lint typecheck codespell testcov
+all: lint typecheck spellcheck pre-commit-misc testcov
 
 .PHONY: clean  ## Clear local caches and build artifacts
 clean:

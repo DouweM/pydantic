@@ -55,7 +55,7 @@ dynamic = ['version', 'readme']
 email = ['email-validator>=2.0.0']
 timezone = [
     # See: https://docs.python.org/3/library/zoneinfo.html#data-sources
-    'tzdata; python_version >= "3.9" and platform_system == "Windows"',
+    'tzdata',
 ]
 
 [project.urls]
@@ -81,6 +81,9 @@ dev = [
     'pytest-run-parallel>=0.3.1',
     'packaging',
     'jsonschema',
+    'pre-commit',
+    'codespell',
+    'tomli',
 ]
 docs = [
     'autoflake',
@@ -184,7 +187,7 @@ default-groups = ['dev']
 
 # configuring https://github.com/pydantic/hooky
 [tool.hooky]
-reviewers = ['sydney-runkle']
+reviewers = ['DouweM']
 require_change_file = false
 unconfirmed_label = 'pending'
 
@@ -272,7 +275,7 @@ strict = ['tests/test_pipeline.py']
 enableExperimentalFeatures = true
 
 [tool.codespell]
-skip = '.git,env*,pydantic/v1/*,uv.lock'
+skip = '.git,env*,pydantic/v1/*,uv.lock,*.json'
 # `ser` - abbreviation for "ser"ialisation
 # `crate` - a rust crate
 ignore-words-list = 'gir,ser,crate'
